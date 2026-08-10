@@ -59,7 +59,7 @@ export default function ProfilePage() {
     <div className="flex min-h-svh flex-col">
       <AppHeader />
 
-      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 p-4">
+      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 p-4">
         <Card>
           <CardHeader>
             <CardTitle>Profil</CardTitle>

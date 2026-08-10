@@ -6,7 +6,7 @@ import { ArchimonsterGridCard } from "@/components/archimonsters/archimonster-gr
 import type { ArchimonsterView } from "@/components/archimonsters/archimonster-view-toggle";
 import type { ArchimonsterListItem } from "@/lib/api/types";
 
-const GRID_CLASSNAME = "grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4";
+const GRID_CLASSNAME = "grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6";
 
 interface ArchimonsterGridProps {
   archimonsters: ArchimonsterListItem[] | undefined;

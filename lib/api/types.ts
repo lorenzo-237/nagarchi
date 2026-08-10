@@ -20,6 +20,16 @@ export interface PendingUser {
   servers: Server[];
 }
 
+export interface AdminUser {
+  id: string;
+  email: string;
+  pseudo: string;
+  isApproved: boolean;
+  isAdmin: boolean;
+  createdAt: string;
+  servers: Server[];
+}
+
 // Réponse de GET /servers/:serverId/archimonsters : la fiche de l'archimonstre
 // fusionnée avec ses données propres au serveur courant (prix, heures, auteur).
 export interface ArchimonsterListItem {

@@ -23,7 +23,7 @@ export function ArchimonsterSearch({ value, onChange }: ArchimonsterSearchProps)
       <Input
         value={inputValue}
         onChange={(event) => setInputValue(event.target.value)}
-        placeholder="Rechercher un archimonstre..."
+        placeholder="Rechercher par nom ou par zone..."
         className="h-9 pl-9"
       />
     </div>
