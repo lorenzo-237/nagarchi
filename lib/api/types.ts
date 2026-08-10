@@ -57,3 +57,45 @@ export interface ArchimonsterServerData {
   updatedById: string | null;
   updatedAt: string;
 }
+
+export interface KillEvent {
+  id: string;
+  killedAt: string;
+}
+
+export type KillRange = "24h" | "7d";
+
+export interface AppSettings {
+  id: string;
+  maxKillsPerDay: number;
+  updatedAt: string;
+}
+
+export interface KillFeedSale {
+  amount: number;
+  soldAt: string;
+  sellerId: string;
+  sellerPseudo: string;
+}
+
+export interface KillFeedItem {
+  id: string;
+  killedAt: string;
+  archimonster: { id: string; name: string; imageUrl: string | null };
+  sale: KillFeedSale | null;
+}
+
+export interface Sale {
+  id: string;
+  killEventId: string;
+  userId: string;
+  amount: number;
+  soldAt: string;
+}
+
+export type ProfitRange = "7d" | "30d" | "90d";
+
+export interface ProfitSummary {
+  total: number;
+  sales: { amount: number; soldAt: string }[];
+}

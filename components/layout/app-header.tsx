@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ShieldIcon } from "lucide-react";
+import { CoinsIcon, ShieldIcon } from "lucide-react";
 
 import { ServerSwitcher } from "@/components/layout/server-switcher";
 import { UserMenu } from "@/components/layout/user-menu";
@@ -21,6 +21,9 @@ export function AppHeader() {
         </Link>
 
         <div className="flex items-center gap-3">
+          <Link href="/sales" aria-label="Mes ventes" className={buttonVariants({ variant: "ghost", size: "icon-sm" })}>
+            <CoinsIcon />
+          </Link>
           {user?.isAdmin && (
             <Link href="/admin" aria-label="Administration" className={buttonVariants({ variant: "ghost", size: "icon-sm" })}>
               <ShieldIcon />

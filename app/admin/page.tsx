@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { AdminNav, type AdminSection } from "@/components/admin/admin-nav";
 import { AppHeader } from "@/components/layout/app-header";
 import { PendingUsersTable } from "@/components/admin/pending-users-table";
+import { SettingsForm } from "@/components/admin/settings-form";
 import { UsersTable } from "@/components/admin/users-table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -120,6 +121,18 @@ export default function AdminPage() {
                     onRevoke={handleRevoke}
                   />
                 )}
+              </CardContent>
+            </Card>
+          )}
+
+          {section === "settings" && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Paramètres</CardTitle>
+                <CardDescription>Réglages globaux de l&apos;application.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <SettingsForm />
               </CardContent>
             </Card>
           )}

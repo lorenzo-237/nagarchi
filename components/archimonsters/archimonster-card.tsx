@@ -5,6 +5,7 @@ import { SkullIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArchimonsterFavoriteButton } from "@/components/archimonsters/archimonster-favorite-button";
+import { ArchimonsterHistoryButton } from "@/components/archimonsters/archimonster-history-button";
 import { ArchimonsterQuickKillButton } from "@/components/archimonsters/archimonster-quick-kill-button";
 import { ArchimonsterRespawnBadge } from "@/components/archimonsters/archimonster-respawn-badge";
 import { ArchimonsterUpdatedBy } from "@/components/archimonsters/archimonster-updated-by";
@@ -41,6 +42,11 @@ export function ArchimonsterCard({ archimonster, serverId, onSelect }: Archimons
           <div className="flex items-center gap-1">
             <span className="truncate font-medium">{archimonster.name}</span>
             <ArchimonsterQuickKillButton archimonsterId={archimonster.id} serverId={serverId} />
+            <ArchimonsterHistoryButton
+              archimonsterId={archimonster.id}
+              archimonsterName={archimonster.name}
+              serverId={serverId}
+            />
             <ArchimonsterFavoriteButton
               archimonsterId={archimonster.id}
               serverId={serverId}

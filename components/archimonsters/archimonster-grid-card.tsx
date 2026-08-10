@@ -5,6 +5,7 @@ import { SkullIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArchimonsterFavoriteButton } from "@/components/archimonsters/archimonster-favorite-button";
+import { ArchimonsterHistoryButton } from "@/components/archimonsters/archimonster-history-button";
 import { ArchimonsterQuickKillButton } from "@/components/archimonsters/archimonster-quick-kill-button";
 import { ArchimonsterRespawnBadge } from "@/components/archimonsters/archimonster-respawn-badge";
 import { ArchimonsterUpdatedBy } from "@/components/archimonsters/archimonster-updated-by";
@@ -29,11 +30,14 @@ export function ArchimonsterGridCard({
       onClick={() => onSelect(archimonster)}
       className="relative cursor-pointer transition-shadow hover:shadow-md"
     >
-      <ArchimonsterQuickKillButton
-        archimonsterId={archimonster.id}
-        serverId={serverId}
-        className="absolute top-2 left-2"
-      />
+      <div className="absolute top-2 left-2 flex items-center gap-0.5">
+        <ArchimonsterQuickKillButton archimonsterId={archimonster.id} serverId={serverId} />
+        <ArchimonsterHistoryButton
+          archimonsterId={archimonster.id}
+          archimonsterName={archimonster.name}
+          serverId={serverId}
+        />
+      </div>
       <ArchimonsterFavoriteButton
         archimonsterId={archimonster.id}
         serverId={serverId}

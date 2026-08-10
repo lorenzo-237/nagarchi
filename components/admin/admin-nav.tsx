@@ -1,10 +1,10 @@
 "use client";
 
-import { MailCheckIcon, UsersIcon } from "lucide-react";
+import { MailCheckIcon, SettingsIcon, UsersIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-export type AdminSection = "pending" | "users";
+export type AdminSection = "pending" | "users" | "settings";
 
 interface AdminNavProps {
   section: AdminSection;
@@ -37,6 +37,15 @@ export function AdminNav({ section, pendingCount, onChange }: AdminNavProps) {
       >
         <UsersIcon />
         Utilisateurs
+      </Button>
+      <Button
+        type="button"
+        variant={section === "settings" ? "secondary" : "ghost"}
+        className="flex-1 justify-start gap-2 sm:flex-initial"
+        onClick={() => onChange("settings")}
+      >
+        <SettingsIcon />
+        Paramètres
       </Button>
     </nav>
   );

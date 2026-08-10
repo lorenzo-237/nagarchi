@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ArchimonsterEditForm } from "@/components/archimonsters/archimonster-edit-form";
 import { ArchimonsterFavoriteButton } from "@/components/archimonsters/archimonster-favorite-button";
+import { ArchimonsterHistoryButton } from "@/components/archimonsters/archimonster-history-button";
 import { ArchimonsterQuickKillButton } from "@/components/archimonsters/archimonster-quick-kill-button";
 import { ArchimonsterRespawnBadge } from "@/components/archimonsters/archimonster-respawn-badge";
 import { ArchimonsterUpdatedBy } from "@/components/archimonsters/archimonster-updated-by";
@@ -50,6 +51,11 @@ export function ArchimonsterDetailSheet({
                     <SheetTitle>{archimonster.name}</SheetTitle>
                     <ArchimonsterQuickKillButton
                       archimonsterId={archimonster.id}
+                      serverId={serverId}
+                    />
+                    <ArchimonsterHistoryButton
+                      archimonsterId={archimonster.id}
+                      archimonsterName={archimonster.name}
                       serverId={serverId}
                     />
                     <ArchimonsterFavoriteButton
