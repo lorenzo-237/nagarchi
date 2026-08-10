@@ -6,24 +6,42 @@ import { toast } from "sonner";
 
 import { AdminNav, type AdminSection } from "@/components/admin/admin-nav";
 import { AppHeader } from "@/components/layout/app-header";
+import { KillEventsTable } from "@/components/admin/kill-events-table";
 import { PendingUsersTable } from "@/components/admin/pending-users-table";
+import { PriceEventsTable } from "@/components/admin/price-events-table";
 import { SettingsForm } from "@/components/admin/settings-form";
 import { UsersTable } from "@/components/admin/users-table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useApproveUser, usePendingUsers, useRejectUser, useRevokeUser, useUsers } from "@/hooks/use-admin";
+import { useServerContext } from "@/components/providers/server-context";
+import {
+  useAdminKillEvents,
+  useAdminPriceEvents,
+  useApproveUser,
+  useDeleteAdminKillEvent,
+  useDeleteAdminPriceEvent,
+  usePendingUsers,
+  useRejectUser,
+  useRevokeUser,
+  useUsers,
+} from "@/hooks/use-admin";
 import { useCurrentUser } from "@/hooks/use-auth";
 import { ApiError } from "@/lib/api/client";
 
 export default function AdminPage() {
   const router = useRouter();
+  const { currentServerId } = useServerContext();
   const [section, setSection] = React.useState<AdminSection>("pending");
   const { data: user, isLoading: userLoading } = useCurrentUser();
   const { data: pendingUsers, isLoading: pendingLoading } = usePendingUsers();
   const { data: users, isLoading: usersLoading } = useUsers();
+  const { data: killEvents, isLoading: killEventsLoading } = useAdminKillEvents(currentServerId);
+  const { data: priceEvents, isLoading: priceEventsLoading } = useAdminPriceEvents(currentServerId);
   const approveUser = useApproveUser();
   const rejectUser = useRejectUser();
   const revokeUser = useRevokeUser();
+  const deleteKillEvent = useDeleteAdminKillEvent(currentServerId);
+  const deletePriceEvent = useDeleteAdminPriceEvent(currentServerId);
 
   const isNotAdmin = !userLoading && user !== undefined && !user.isAdmin;
 
@@ -55,6 +73,24 @@ export default function AdminPage() {
       toast.success("Compte remis en attente");
     } catch (error) {
       toast.error(error instanceof ApiError ? error.message : "Impossible de remettre ce compte en attente");
+    }
+  }
+
+  async function handleDeleteKillEvent(killEventId: string) {
+    try {
+      await deleteKillEvent.mutateAsync(killEventId);
+      toast.success("Kill supprimé");
+    } catch (error) {
+      toast.error(error instanceof ApiError ? error.message : "Impossible de supprimer ce kill");
+    }
+  }
+
+  async function handleDeletePriceEvent(priceEventId: string) {
+    try {
+      await deletePriceEvent.mutateAsync(priceEventId);
+      toast.success("Prix supprimé");
+    } catch (error) {
+      toast.error(error instanceof ApiError ? error.message : "Impossible de supprimer ce prix");
     }
   }
 
@@ -119,6 +155,66 @@ export default function AdminPage() {
                     currentUserId={user.id}
                     isRevoking={revokeUser.isPending}
                     onRevoke={handleRevoke}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {section === "kills" && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Kills</CardTitle>
+                <CardDescription>
+                  Tous les kills signalés sur le serveur sélectionné. Supprimer recalcule
+                  automatiquement le dernier kill affiché pour l&apos;archimonstre concerné.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {killEventsLoading && (
+                  <div className="flex flex-col gap-2">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-10 w-full" />
+                  </div>
+                )}
+                {!killEventsLoading && killEvents?.length === 0 && (
+                  <p className="text-sm text-muted-foreground">Aucun kill enregistré.</p>
+                )}
+                {killEvents && killEvents.length > 0 && (
+                  <KillEventsTable
+                    events={killEvents}
+                    isDeleting={deleteKillEvent.isPending}
+                    onDelete={handleDeleteKillEvent}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {section === "prices" && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Prix</CardTitle>
+                <CardDescription>
+                  Tous les changements de prix signalés sur le serveur sélectionné. Supprimer
+                  recalcule automatiquement le prix affiché pour l&apos;archimonstre concerné.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {priceEventsLoading && (
+                  <div className="flex flex-col gap-2">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-10 w-full" />
+                  </div>
+                )}
+                {!priceEventsLoading && priceEvents?.length === 0 && (
+                  <p className="text-sm text-muted-foreground">Aucun prix enregistré.</p>
+                )}
+                {priceEvents && priceEvents.length > 0 && (
+                  <PriceEventsTable
+                    events={priceEvents}
+                    isDeleting={deletePriceEvent.isPending}
+                    onDelete={handleDeletePriceEvent}
                   />
                 )}
               </CardContent>

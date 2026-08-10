@@ -107,3 +107,18 @@ export interface ProfitSummary {
   total: number;
   sales: { amount: number; soldAt: string }[];
 }
+
+export interface AdminKillEvent {
+  id: string;
+  killedAt: string;
+  archimonsterName: string;
+  createdByPseudo: string | null;
+}
+
+export interface AdminPriceEvent {
+  id: string;
+  price: number;
+  recordedAt: string;
+  archimonsterName: string;
+  createdByPseudo: string | null;
+}

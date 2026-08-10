@@ -1,10 +1,10 @@
 "use client";
 
-import { MailCheckIcon, SettingsIcon, UsersIcon } from "lucide-react";
+import { ChartLineIcon, MailCheckIcon, SettingsIcon, SwordsIcon, UsersIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-export type AdminSection = "pending" | "users" | "settings";
+export type AdminSection = "pending" | "users" | "settings" | "kills" | "prices";
 
 interface AdminNavProps {
   section: AdminSection;
@@ -37,6 +37,24 @@ export function AdminNav({ section, pendingCount, onChange }: AdminNavProps) {
       >
         <UsersIcon />
         Utilisateurs
+      </Button>
+      <Button
+        type="button"
+        variant={section === "kills" ? "secondary" : "ghost"}
+        className="flex-1 justify-start gap-2 sm:flex-initial"
+        onClick={() => onChange("kills")}
+      >
+        <SwordsIcon />
+        Kills
+      </Button>
+      <Button
+        type="button"
+        variant={section === "prices" ? "secondary" : "ghost"}
+        className="flex-1 justify-start gap-2 sm:flex-initial"
+        onClick={() => onChange("prices")}
+      >
+        <ChartLineIcon />
+        Prix
       </Button>
       <Button
         type="button"

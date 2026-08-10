@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiDelete, apiGet, apiPost } from "@/lib/api/client";
-import type { AdminUser, PendingUser } from "@/lib/api/types";
+import type { AdminKillEvent, AdminPriceEvent, AdminUser, PendingUser } from "@/lib/api/types";
 
 export function usePendingUsers() {
   return useQuery({
@@ -42,5 +42,54 @@ export function useRevokeUser() {
   return useMutation({
     mutationFn: (userId: string) => apiPost(`/api/proxy/admin/users/${userId}/revoke`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin"] }),
+  });
+}
+
+export function useAdminKillEvents(serverId: string | undefined) {
+  return useQuery({
+    queryKey: ["admin", "kills", serverId],
+    queryFn: () => apiGet<AdminKillEvent[]>(`/api/proxy/admin/kills?serverId=${serverId}`),
+    enabled: Boolean(serverId),
+  });
+}
+
+// Une suppression admin peut changer la valeur "actuelle" d'un archimonstre
+// (lastKilledAt recalculé côté API) et cascader sur une vente liée : on
+// invalide tout ce qui pourrait en dépendre, pas seulement la liste admin.
+function invalidateAfterKillOrPriceDelete(
+  queryClient: ReturnType<typeof useQueryClient>,
+  serverId: string | undefined
+) {
+  queryClient.invalidateQueries({ queryKey: ["admin"] });
+  queryClient.invalidateQueries({ queryKey: ["archimonsters", serverId] });
+  queryClient.invalidateQueries({ queryKey: ["kills", serverId] });
+  queryClient.invalidateQueries({ queryKey: ["prices", serverId] });
+  queryClient.invalidateQueries({ queryKey: ["kill-feed", serverId] });
+  queryClient.invalidateQueries({ queryKey: ["profit-summary", serverId] });
+}
+
+export function useDeleteAdminKillEvent(serverId: string | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (killEventId: string) => apiDelete(`/api/proxy/admin/kills/${killEventId}`),
+    onSuccess: () => invalidateAfterKillOrPriceDelete(queryClient, serverId),
+  });
+}
+
+export function useAdminPriceEvents(serverId: string | undefined) {
+  return useQuery({
+    queryKey: ["admin", "prices", serverId],
+    queryFn: () => apiGet<AdminPriceEvent[]>(`/api/proxy/admin/prices?serverId=${serverId}`),
+    enabled: Boolean(serverId),
+  });
+}
+
+export function useDeleteAdminPriceEvent(serverId: string | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (priceEventId: string) => apiDelete(`/api/proxy/admin/prices/${priceEventId}`),
+    onSuccess: () => invalidateAfterKillOrPriceDelete(queryClient, serverId),
   });
 }
