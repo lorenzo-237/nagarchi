@@ -25,9 +25,12 @@ async function copyUndercutPrice(price: number) {
 }
 
 const priceSchema = z.object({
+  // Autorise de coller un prix copié depuis le jeu ("305 990") : les espaces
+  // (normaux ou insécables) sont retirés avant conversion.
   price: z
     .string()
-    .transform((value) => (value.trim() === "" ? null : Number(value)))
+    .transform((value) => value.replace(/\s/g, ""))
+    .transform((value) => (value === "" ? null : Number(value)))
     .refine((value) => value === null || Number.isFinite(value), "Doit être un nombre")
     .refine((value) => value === null || value >= 0, "Doit être positif"),
 });
@@ -63,7 +66,7 @@ export function ArchimonsterPriceForm({ archimonster, serverId }: ArchimonsterPr
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-1.5">
       <Label htmlFor="price">Prix actuel (K)</Label>
       <div className="flex gap-2">
-        <Input id="price" type="number" min={0} className="flex-1" {...register("price")} />
+        <Input id="price" type="text" inputMode="numeric" className="flex-1" {...register("price")} />
         {archimonster.price !== null && (
           <Button
             type="button"

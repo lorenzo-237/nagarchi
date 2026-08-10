@@ -20,9 +20,11 @@ import { useCreateSale } from "@/hooks/use-sales";
 import { ApiError } from "@/lib/api/client";
 
 const saleSchema = z.object({
+  // Autorise de coller un montant copié depuis le jeu ("305 990") : les
+  // espaces (normaux ou insécables) sont retirés avant conversion.
   amount: z
     .string()
-    .transform((value) => Number(value))
+    .transform((value) => Number(value.replace(/\s/g, "")))
     .refine((value) => Number.isFinite(value) && value > 0, "Doit être un nombre positif"),
 });
 
@@ -66,7 +68,7 @@ export function MarkSoldDialog({ killEventId, serverId, archimonsterName }: Mark
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="amount">Prix de vente (K)</Label>
-            <Input id="amount" type="number" min={1} autoFocus {...register("amount")} />
+            <Input id="amount" type="text" inputMode="numeric" autoFocus {...register("amount")} />
           </div>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Enregistrement..." : "Confirmer la vente"}
