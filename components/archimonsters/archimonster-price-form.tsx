@@ -1,5 +1,6 @@
 "use client";
 
+import { CopyIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,6 +12,17 @@ import { Label } from "@/components/ui/label";
 import { useUpdateArchimonster } from "@/hooks/use-archimonsters";
 import { ApiError } from "@/lib/api/client";
 import type { ArchimonsterListItem } from "@/lib/api/types";
+
+// Pour se placer premier vendeur sur l'HDV en jeu, on copie le prix moins 1.
+async function copyUndercutPrice(price: number) {
+  const undercut = price - 1;
+  try {
+    await navigator.clipboard.writeText(String(undercut));
+    toast.success(`${undercut.toLocaleString("fr-FR")} copié`);
+  } catch {
+    toast.error("Impossible de copier le prix");
+  }
+}
 
 const priceSchema = z.object({
   price: z
@@ -52,6 +64,18 @@ export function ArchimonsterPriceForm({ archimonster, serverId }: ArchimonsterPr
       <Label htmlFor="price">Prix actuel (K)</Label>
       <div className="flex gap-2">
         <Input id="price" type="number" min={0} className="flex-1" {...register("price")} />
+        {archimonster.price !== null && (
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            aria-label="Copier le prix -1 kamas"
+            title="Copier le prix -1 kamas (pour l'HDV)"
+            onClick={() => copyUndercutPrice(archimonster.price!)}
+          >
+            <CopyIcon />
+          </Button>
+        )}
         <Button type="submit" size="sm" disabled={isSubmitting}>
           {isSubmitting ? "..." : "Enregistrer"}
         </Button>
