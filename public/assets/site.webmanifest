@@ -1,0 +1,21 @@
+{
+  "name": "Nagarchi",
+  "short_name": "Nagarchi",
+  "icons": [
+    {
+      "src": "/assets/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "oklch(0.55 0.19 258)",
+  "background_color": "oklch(0.99 0.003 240)",
+  "display": "standalone"
+}
