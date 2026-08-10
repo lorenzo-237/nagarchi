@@ -13,6 +13,7 @@ import {
 } from "@/components/archimonsters/archimonster-view-toggle";
 import { useServerContext } from "@/components/providers/server-context";
 import { useArchimonsters } from "@/hooks/use-archimonsters";
+import { compareByAvailability } from "@/lib/respawn";
 
 const MIN_SEARCH_LENGTH = 3;
 
@@ -32,7 +33,12 @@ export default function Page() {
     favoritesOnly,
   });
 
-  const selected = archimonsters?.find((item) => item.id === selectedId) ?? null;
+  const sortedArchimonsters = React.useMemo(
+    () => (archimonsters ? [...archimonsters].sort(compareByAvailability) : archimonsters),
+    [archimonsters]
+  );
+
+  const selected = sortedArchimonsters?.find((item) => item.id === selectedId) ?? null;
 
   function handleScopeToggle() {
     if (favoritesOnly) {
@@ -65,7 +71,7 @@ export default function Page() {
         </p>
 
         <ArchimonsterGrid
-          archimonsters={archimonsters}
+          archimonsters={sortedArchimonsters}
           isLoading={isLoading || !currentServerId}
           view={view}
           serverId={currentServerId ?? ""}

@@ -48,6 +48,7 @@ export function useUpdateArchimonster(serverId: string | undefined) {
       queryClient.invalidateQueries({ queryKey: ["archimonsters", serverId] });
       queryClient.invalidateQueries({ queryKey: ["kills", serverId] });
       queryClient.invalidateQueries({ queryKey: ["kill-feed", serverId] });
+      queryClient.invalidateQueries({ queryKey: ["prices", serverId] });
     },
   });
 }

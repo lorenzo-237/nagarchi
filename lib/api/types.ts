@@ -65,6 +65,14 @@ export interface KillEvent {
 
 export type KillRange = "24h" | "7d";
 
+export interface PriceEvent {
+  id: string;
+  price: number;
+  recordedAt: string;
+}
+
+export type PriceRange = "24h" | "7d" | "30d";
+
 export interface AppSettings {
   id: string;
   maxKillsPerDay: number;

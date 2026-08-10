@@ -4,10 +4,18 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiDelete, apiGet, apiPost } from "@/lib/api/client";
 import type { KillFeedItem, ProfitRange, ProfitSummary, Sale } from "@/lib/api/types";
 
-export function useKillFeed(serverId: string | undefined) {
+interface KillFeedRange {
+  from: string;
+  to: string;
+}
+
+export function useKillFeed(serverId: string | undefined, range: KillFeedRange) {
   return useQuery({
-    queryKey: ["kill-feed", serverId],
-    queryFn: () => apiGet<KillFeedItem[]>(`/api/proxy/servers/${serverId}/kills/feed`),
+    queryKey: ["kill-feed", serverId, range.from, range.to],
+    queryFn: () =>
+      apiGet<KillFeedItem[]>(
+        `/api/proxy/servers/${serverId}/kills/feed?from=${encodeURIComponent(range.from)}&to=${encodeURIComponent(range.to)}`
+      ),
     enabled: Boolean(serverId),
   });
 }

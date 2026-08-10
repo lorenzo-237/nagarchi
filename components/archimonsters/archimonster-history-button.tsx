@@ -12,7 +12,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ArchimonsterKillChart } from "@/components/archimonsters/archimonster-kill-chart";
+import { ArchimonsterPriceChart } from "@/components/archimonsters/archimonster-price-chart";
 import { cn } from "@/lib/utils";
+
+type HistoryTab = "kills" | "price";
 
 interface ArchimonsterHistoryButtonProps {
   archimonsterId: string;
@@ -27,6 +30,8 @@ export function ArchimonsterHistoryButton({
   serverId,
   className,
 }: ArchimonsterHistoryButtonProps) {
+  const [tab, setTab] = React.useState<HistoryTab>("kills");
+
   return (
     <Dialog>
       <DialogTrigger
@@ -36,7 +41,7 @@ export function ArchimonsterHistoryButton({
             variant="ghost"
             size="icon-sm"
             className={cn(className)}
-            aria-label="Historique des kills"
+            aria-label="Historique"
             onClick={(event) => event.stopPropagation()}
           />
         }
@@ -45,9 +50,33 @@ export function ArchimonsterHistoryButton({
       </DialogTrigger>
       <DialogContent className="sm:max-w-4xl" onClick={(event) => event.stopPropagation()}>
         <DialogHeader>
-          <DialogTitle>{archimonsterName} — historique des kills</DialogTitle>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <DialogTitle>{archimonsterName} — historique</DialogTitle>
+            <div className="flex items-center gap-1 rounded-2xl bg-muted p-1">
+              <Button
+                type="button"
+                size="xs"
+                variant={tab === "kills" ? "default" : "ghost"}
+                onClick={() => setTab("kills")}
+              >
+                Kills
+              </Button>
+              <Button
+                type="button"
+                size="xs"
+                variant={tab === "price" ? "default" : "ghost"}
+                onClick={() => setTab("price")}
+              >
+                Prix
+              </Button>
+            </div>
+          </div>
         </DialogHeader>
-        <ArchimonsterKillChart archimonsterId={archimonsterId} serverId={serverId} />
+        {tab === "kills" ? (
+          <ArchimonsterKillChart archimonsterId={archimonsterId} serverId={serverId} />
+        ) : (
+          <ArchimonsterPriceChart archimonsterId={archimonsterId} serverId={serverId} />
+        )}
       </DialogContent>
     </Dialog>
   );

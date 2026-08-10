@@ -53,3 +53,23 @@ export function todayAtTime(hhmm: string): string {
   date.setHours(hours, minutes, 0, 0);
   return date.toISOString();
 }
+
+// disponible > bientôt > à venir > inconnu (pas de lastKilledAt/respawnHours,
+// donc aucune info exploitable pour dire s'il est dispo).
+function availabilityRank(item: { lastKilledAt: string | null; respawnHours: number | null }): number {
+  const window = computeRespawnWindow(item.lastKilledAt, item.respawnHours);
+  if (!window) return 3;
+
+  const status = getRespawnStatus(window);
+  if (status === "available") return 0;
+  if (status === "soon") return 1;
+  return 2;
+}
+
+export function compareByAvailability<
+  T extends { lastKilledAt: string | null; respawnHours: number | null; name: string },
+>(a: T, b: T): number {
+  const rankDiff = availabilityRank(a) - availabilityRank(b);
+  if (rankDiff !== 0) return rankDiff;
+  return a.name.localeCompare(b.name, "fr");
+}

@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { AppHeader } from "@/components/layout/app-header";
+import { DateRangeFilter } from "@/components/sales/date-range-filter";
 import { KillFeedList } from "@/components/sales/kill-feed-list";
 import { ProfitChart } from "@/components/sales/profit-chart";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useServerContext } from "@/components/providers/server-context";
 import { useProfitSummary } from "@/hooks/use-sales";
 import type { ProfitRange } from "@/lib/api/types";
+import { defaultDateRange, endOfDayISO, startOfDayISO } from "@/lib/date-range";
 
 const RANGE_DAYS: Record<ProfitRange, number> = { "7d": 7, "30d": 30, "90d": 90 };
 const RANGE_LABELS: Record<ProfitRange, string> = {
@@ -23,6 +25,7 @@ export default function SalesPage() {
   const { currentServerId } = useServerContext();
   const [range, setRange] = React.useState<ProfitRange>("7d");
   const { data: summary, isLoading: summaryLoading } = useProfitSummary(currentServerId, range);
+  const [feedRange, setFeedRange] = React.useState(() => defaultDateRange(7));
 
   return (
     <div className="flex min-h-svh flex-col">
@@ -62,14 +65,23 @@ export default function SalesPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Kills récents</CardTitle>
-            <CardDescription>
-              Marque un kill comme vendu pour l&apos;ajouter à tes bénéfices.
-            </CardDescription>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <CardTitle>Kills récents</CardTitle>
+                <CardDescription>
+                  Marque un kill comme vendu pour l&apos;ajouter à tes bénéfices.
+                </CardDescription>
+              </div>
+              <DateRangeFilter value={feedRange} onChange={setFeedRange} />
+            </div>
           </CardHeader>
           <CardContent>
             {currentServerId ? (
-              <KillFeedList serverId={currentServerId} />
+              <KillFeedList
+                serverId={currentServerId}
+                from={startOfDayISO(feedRange.from)}
+                to={endOfDayISO(feedRange.to)}
+              />
             ) : (
               <p className="text-sm text-muted-foreground">Sélectionne un serveur.</p>
             )}

@@ -6,10 +6,12 @@ import { SkullIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { ArchimonsterEditForm } from "@/components/archimonsters/archimonster-edit-form";
 import { ArchimonsterFavoriteButton } from "@/components/archimonsters/archimonster-favorite-button";
 import { ArchimonsterHistoryButton } from "@/components/archimonsters/archimonster-history-button";
+import { ArchimonsterKillTimeForm } from "@/components/archimonsters/archimonster-kill-time-form";
+import { ArchimonsterPriceForm } from "@/components/archimonsters/archimonster-price-form";
 import { ArchimonsterQuickKillButton } from "@/components/archimonsters/archimonster-quick-kill-button";
+import { ArchimonsterRespawnForm } from "@/components/archimonsters/archimonster-respawn-form";
 import { ArchimonsterRespawnBadge } from "@/components/archimonsters/archimonster-respawn-badge";
 import { ArchimonsterUpdatedBy } from "@/components/archimonsters/archimonster-updated-by";
 import type { ArchimonsterListItem } from "@/lib/api/types";
@@ -96,11 +98,9 @@ export function ArchimonsterDetailSheet({
 
               <Separator />
 
-              <ArchimonsterEditForm
-                archimonster={archimonster}
-                serverId={serverId}
-                onSuccess={() => onOpenChange(false)}
-              />
+              <ArchimonsterPriceForm archimonster={archimonster} serverId={serverId} />
+              <ArchimonsterRespawnForm archimonster={archimonster} serverId={serverId} />
+              <ArchimonsterKillTimeForm archimonster={archimonster} serverId={serverId} />
 
               {archimonster.updatedBy && (
                 <p className="text-xs text-muted-foreground">

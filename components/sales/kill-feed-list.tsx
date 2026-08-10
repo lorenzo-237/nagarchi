@@ -14,10 +14,12 @@ import { ApiError } from "@/lib/api/client";
 
 interface KillFeedListProps {
   serverId: string;
+  from: string;
+  to: string;
 }
 
-export function KillFeedList({ serverId }: KillFeedListProps) {
-  const { data: feed, isLoading } = useKillFeed(serverId);
+export function KillFeedList({ serverId, from, to }: KillFeedListProps) {
+  const { data: feed, isLoading } = useKillFeed(serverId, { from, to });
   const { data: user } = useCurrentUser();
   const deleteSale = useDeleteSale(serverId);
 
@@ -41,7 +43,7 @@ export function KillFeedList({ serverId }: KillFeedListProps) {
   }
 
   if (!feed || feed.length === 0) {
-    return <p className="text-sm text-muted-foreground">Aucun kill enregistré pour l&apos;instant.</p>;
+    return <p className="text-sm text-muted-foreground">Aucun kill enregistré sur cette période.</p>;
   }
 
   return (
