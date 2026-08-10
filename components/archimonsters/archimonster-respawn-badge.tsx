@@ -2,11 +2,30 @@
 
 import { Badge } from "@/components/ui/badge";
 import { computeRespawnWindow, formatTime, getRespawnStatus } from "@/lib/respawn";
+import { cn } from "@/lib/utils";
 
 interface ArchimonsterRespawnBadgeProps {
   lastKilledAt: string | null;
   respawnHours: number | null;
   className?: string;
+}
+
+interface StatusBadgeProps {
+  dotClassName: string;
+  label: string;
+  className?: string;
+}
+
+// Badge discret et uniforme pour tous les états : une pastille de couleur
+// porte le statut, le texte porte toujours le créneau (ou l'intervalle brut
+// quand on ne connaît pas encore de dernier kill).
+function StatusBadge({ dotClassName, label, className }: StatusBadgeProps) {
+  return (
+    <Badge variant="outline" className={cn("gap-1.5", className)}>
+      <span className={cn("size-2 shrink-0 rounded-full", dotClassName)} />
+      {label}
+    </Badge>
+  );
 }
 
 export function ArchimonsterRespawnBadge({
@@ -18,37 +37,24 @@ export function ArchimonsterRespawnBadge({
 
   if (!window) {
     return (
-      <Badge variant="outline" className={className}>
-        {respawnHours !== null ? `Toutes les ${respawnHours}h` : "Intervalle ?"}
-      </Badge>
+      <StatusBadge
+        dotClassName="bg-muted-foreground/40"
+        label={respawnHours !== null ? `Toutes les ${respawnHours}h` : "Intervalle ?"}
+        className={className}
+      />
     );
   }
 
   const status = getRespawnStatus(window);
+  const label = `${formatTime(window.start)}–${formatTime(window.end)}`;
 
   if (status === "available") {
-    return (
-      <Badge
-        className={`border-transparent bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 ${className ?? ""}`}
-      >
-        Disponible
-      </Badge>
-    );
+    return <StatusBadge dotClassName="bg-emerald-500" label={label} className={className} />;
   }
 
   if (status === "soon") {
-    return (
-      <Badge
-        className={`border-transparent bg-amber-500/15 text-amber-600 dark:text-amber-400 ${className ?? ""}`}
-      >
-        Bientôt · {formatTime(window.start)}–{formatTime(window.end)}
-      </Badge>
-    );
+    return <StatusBadge dotClassName="bg-amber-500" label={label} className={className} />;
   }
 
-  return (
-    <Badge variant="outline" className={className}>
-      {formatTime(window.start)}–{formatTime(window.end)}
-    </Badge>
-  );
+  return <StatusBadge dotClassName="bg-muted-foreground/40" label={label} className={className} />;
 }

@@ -53,6 +53,7 @@ export function ArchimonsterDetailSheet({
                     <SheetTitle>{archimonster.name}</SheetTitle>
                     <ArchimonsterQuickKillButton
                       archimonsterId={archimonster.id}
+                      archimonsterName={archimonster.name}
                       serverId={serverId}
                     />
                     <ArchimonsterHistoryButton

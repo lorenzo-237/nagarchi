@@ -41,7 +41,11 @@ export function ArchimonsterCard({ archimonster, serverId, onSelect }: Archimons
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <div className="flex items-center gap-1">
             <span className="truncate font-medium">{archimonster.name}</span>
-            <ArchimonsterQuickKillButton archimonsterId={archimonster.id} serverId={serverId} />
+            <ArchimonsterQuickKillButton
+              archimonsterId={archimonster.id}
+              archimonsterName={archimonster.name}
+              serverId={serverId}
+            />
             <ArchimonsterHistoryButton
               archimonsterId={archimonster.id}
               archimonsterName={archimonster.name}

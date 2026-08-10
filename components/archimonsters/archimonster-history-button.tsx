@@ -33,26 +33,29 @@ export function ArchimonsterHistoryButton({
   const [tab, setTab] = React.useState<HistoryTab>("kills");
 
   return (
-    <Dialog>
-      <DialogTrigger
-        render={
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            className={cn(className)}
-            aria-label="Historique"
-            onClick={(event) => event.stopPropagation()}
-          />
-        }
-      >
-        <ChartLineIcon className="text-muted-foreground" />
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-4xl" onClick={(event) => event.stopPropagation()}>
-        <DialogHeader>
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <DialogTitle>{archimonsterName} — historique</DialogTitle>
-            <div className="flex items-center gap-1 rounded-2xl bg-muted p-1">
+    // La Dialog est un Portal côté DOM, mais reste un enfant React de la card
+    // cliquable (grille/liste) : sans ce stopPropagation, fermer la modal en
+    // cliquant sur le fond (backdrop) fait remonter le clic jusqu'à la card
+    // et rouvre la sheet juste après.
+    <div onClick={(event) => event.stopPropagation()}>
+      <Dialog>
+        <DialogTrigger
+          render={
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              className={cn(className)}
+              aria-label="Historique"
+            />
+          }
+        >
+          <ChartLineIcon className="text-muted-foreground" />
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-4xl">
+          <DialogHeader>
+            <DialogTitle className="pr-8">{archimonsterName} — historique</DialogTitle>
+            <div className="flex w-fit items-center gap-1 rounded-2xl bg-muted p-1">
               <Button
                 type="button"
                 size="xs"
@@ -70,14 +73,14 @@ export function ArchimonsterHistoryButton({
                 Prix
               </Button>
             </div>
-          </div>
-        </DialogHeader>
-        {tab === "kills" ? (
-          <ArchimonsterKillChart archimonsterId={archimonsterId} serverId={serverId} />
-        ) : (
-          <ArchimonsterPriceChart archimonsterId={archimonsterId} serverId={serverId} />
-        )}
-      </DialogContent>
-    </Dialog>
+          </DialogHeader>
+          {tab === "kills" ? (
+            <ArchimonsterKillChart archimonsterId={archimonsterId} serverId={serverId} />
+          ) : (
+            <ArchimonsterPriceChart archimonsterId={archimonsterId} serverId={serverId} />
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }

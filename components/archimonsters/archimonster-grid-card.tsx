@@ -31,7 +31,11 @@ export function ArchimonsterGridCard({
       className="relative cursor-pointer transition-shadow hover:shadow-md"
     >
       <div className="absolute top-2 left-2 flex items-center gap-0.5">
-        <ArchimonsterQuickKillButton archimonsterId={archimonster.id} serverId={serverId} />
+        <ArchimonsterQuickKillButton
+          archimonsterId={archimonster.id}
+          archimonsterName={archimonster.name}
+          serverId={serverId}
+        />
         <ArchimonsterHistoryButton
           archimonsterId={archimonster.id}
           archimonsterName={archimonster.name}
