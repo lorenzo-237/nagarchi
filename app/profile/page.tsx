@@ -5,6 +5,7 @@ import { LogOutIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppHeader } from "@/components/layout/app-header";
+import { DiscordLinkForm } from "@/components/profile/discord-link-form";
 import { ServerMembershipRow } from "@/components/profile/server-membership-row";
 import { Button } from "@/components/ui/button";
 import {
@@ -79,6 +80,13 @@ export default function ProfilePage() {
               </Button>
             </CardAction>
           </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Notifications Discord</CardTitle>
+          </CardHeader>
+          <CardContent>{user && <DiscordLinkForm user={user} />}</CardContent>
         </Card>
 
         <Card>

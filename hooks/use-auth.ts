@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiGet, apiPost } from "@/lib/api/client";
+import { apiGet, apiPatch, apiPost } from "@/lib/api/client";
 import type { AuthUser } from "@/lib/api/types";
 
 export function useCurrentUser() {
@@ -9,6 +9,16 @@ export function useCurrentUser() {
     queryKey: ["auth", "me"],
     queryFn: () => apiGet<AuthUser>("/api/proxy/auth/me"),
     retry: false,
+  });
+}
+
+export function useUpdateDiscordId() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (discordUserId: string | null) =>
+      apiPatch<AuthUser>("/api/proxy/auth/me", { discordUserId }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["auth", "me"] }),
   });
 }
 

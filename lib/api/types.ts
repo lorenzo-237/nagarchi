@@ -9,6 +9,7 @@ export interface AuthUser {
   email: string;
   pseudo: string;
   isAdmin: boolean;
+  discordUserId: string | null;
   servers: Server[];
 }
 
