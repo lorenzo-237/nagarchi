@@ -34,8 +34,11 @@ export function ArchimonsterRespawnBadge({
   className,
 }: ArchimonsterRespawnBadgeProps) {
   const window = computeRespawnWindow(lastKilledAt, respawnHours);
+  const status = window ? getRespawnStatus(window) : null;
 
-  if (!window) {
+  // Pas de créneau exploitable, ou créneau périmé depuis un jour précédent :
+  // on retombe sur le même affichage que "jamais renseigné".
+  if (!window || status === "expired") {
     return (
       <StatusBadge
         dotClassName="bg-muted-foreground/40"
@@ -45,7 +48,6 @@ export function ArchimonsterRespawnBadge({
     );
   }
 
-  const status = getRespawnStatus(window);
   const label = `${formatTime(window.start)}–${formatTime(window.end)}`;
 
   if (status === "available") {

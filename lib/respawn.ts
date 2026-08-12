@@ -7,7 +7,12 @@ export interface RespawnWindow {
   end: Date;
 }
 
-export type RespawnStatus = "available" | "soon" | "upcoming";
+// "expired" : le créneau est passé depuis un jour précédent — on considère
+// l'info trop périmée pour continuer à afficher "Disponible". On compare la
+// fin du créneau (pas son début) au jour courant : un créneau à cheval sur
+// minuit (23h30–1h00) reste donc valide tant qu'on est encore le jour où il
+// se termine, et n'expire qu'au jour suivant.
+export type RespawnStatus = "available" | "soon" | "upcoming" | "expired";
 
 export function computeRespawnWindow(
   lastKilledAt: string | null,
@@ -21,8 +26,16 @@ export function computeRespawnWindow(
   return { start: new Date(nominal - jitterMs), end: new Date(nominal + jitterMs) };
 }
 
+function isSameCalendarDay(a: Date, b: Date): boolean {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
 export function getRespawnStatus(window: RespawnWindow, now: Date = new Date()): RespawnStatus {
-  if (now >= window.end) return "available";
+  if (now >= window.end) return isSameCalendarDay(window.end, now) ? "available" : "expired";
   if (now >= window.start) return "soon";
   return "upcoming";
 }
@@ -32,13 +45,7 @@ export function formatTime(date: Date): string {
 }
 
 export function isToday(isoString: string): boolean {
-  const date = new Date(isoString);
-  const now = new Date();
-  return (
-    date.getFullYear() === now.getFullYear() &&
-    date.getMonth() === now.getMonth() &&
-    date.getDate() === now.getDate()
-  );
+  return isSameCalendarDay(new Date(isoString), new Date());
 }
 
 export function toHHmm(isoString: string): string {
@@ -54,8 +61,8 @@ export function todayAtTime(hhmm: string): string {
   return date.toISOString();
 }
 
-// disponible > bientôt > à venir > inconnu (pas de lastKilledAt/respawnHours,
-// donc aucune info exploitable pour dire s'il est dispo).
+// disponible > bientôt > à venir > inconnu/expiré (pas d'info exploitable
+// pour dire s'il est dispo — soit jamais renseigné, soit un créneau périmé).
 function availabilityRank(item: { lastKilledAt: string | null; respawnHours: number | null }): number {
   const window = computeRespawnWindow(item.lastKilledAt, item.respawnHours);
   if (!window) return 3;
@@ -63,7 +70,8 @@ function availabilityRank(item: { lastKilledAt: string | null; respawnHours: num
   const status = getRespawnStatus(window);
   if (status === "available") return 0;
   if (status === "soon") return 1;
-  return 2;
+  if (status === "upcoming") return 2;
+  return 3;
 }
 
 export function compareByAvailability<
